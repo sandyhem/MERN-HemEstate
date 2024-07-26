@@ -29,7 +29,6 @@ setFormData({
         body:JSON.stringify(formData),
       })
       const data= await res.json();
-      console.log(data);
       if(data.success === false){
         dispatch(signInFailure(data.message));
         return;
@@ -59,7 +58,7 @@ setFormData({
       <div className="flex gap-2 mt-5">
         <p>Dont have an account?</p>
         <Link to='/signup'>
-        <span className='text-blue-700'>Sign in</span>
+        <span className='text-blue-700'>Sign Up</span>
         </Link>
       </div>
       {
