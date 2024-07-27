@@ -109,6 +109,23 @@ const handleSignout=async()=>{
     dispatch(signOutUserFailure(error.message));
   }
 }
+
+const [userListings,setUserListings]=useState([]);
+const[showListingsError,setShowListingError]=useState(false);
+const handleShowListings=async()=>{
+  try {
+    setShowListingError(false);
+    const res= await fetch(`/api/user/listings/${currentUser._id}`);
+    const data=await res.json();
+    if(data.success === false){
+      setShowListingError(true);
+      return;
+    }
+    setUserListings(data);
+  } catch (error) {
+    setShowListingError(error.message) 
+  }
+}
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center">Profile</h1>
@@ -175,7 +192,29 @@ const handleSignout=async()=>{
       </div>
       <p className="text-red-700">{error? error:''}</p>
       <p className="text-green-700">{updateSuccess?'User updated successfully':''}</p>
-
+       <button onClick={handleShowListings} className="text-green-700 w-full">Show Listings</button>
+      <p className="text-red-700 mt-5">{showListingsError? 'Error showing listings':''}</p>
+      {
+        userListings && userListings.length>0 &&
+        <div className="flex flex-col gap-4">
+          <h1 className="text-center my-7 text-2xl font-semibold">Your Listings</h1>
+        {userListings.map((listing)=>{
+          return (<div key={listing._id} className="border rounded-lg p-3 flex justify-between items-center gap-4">
+                <Link to={`/listing/${listing._id}`}>
+                  <img className="h-16 w-16 object-contain" src={listing.imageUrls[0]} alt="listing cover" />
+                </Link>
+                <Link className="text-slate-700 font-semibold flex-1 hover:underline truncate" to={`/listing/${listing._id}`}>
+                   <p>{listing.name}</p>
+                </Link>
+                   <div className="flex flex-col items-center">
+                     <button className="text-red-700 uppercase">Delete</button>
+                     <button className="text-green-700 uppercase">Edit</button>
+                   </div>
+           </div>)
+        }) 
+        }
+        </div>
+      }
     </div>
   );
 }
