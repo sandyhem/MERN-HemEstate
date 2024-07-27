@@ -8,6 +8,7 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 import { deleteUserFailure, deleteUserStart, deleteUserSuccess, signOutUserFailure, signOutUserStart, signOutUserSuccess, updateUserFailure, updateUserStart, updateUserSuccess } from "../redux/user/userSlice";
+import {Link} from 'react-router-dom'
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -164,6 +165,9 @@ const handleSignout=async()=>{
             loading?"Loading...":"Update"
           }
         </button>
+        <Link className="bg-green-700 text-white rounded-lg p-3 uppercase text-center hover:opacity-95" to='/create'>
+            Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span onClick={handleDeleteUser} className="text-red-700 cursor-pointer">Delete Account</span>
