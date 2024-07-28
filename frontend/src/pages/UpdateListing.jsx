@@ -2,9 +2,9 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import React, { useEffect, useState } from "react";
 import { app } from "../firebase";
 import { useSelector } from 'react-redux'
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 
-export default function CreateListing() {
+export default function UpdateListing() {
     const [files,setFiles]=useState([]);
     const [error,setError]=useState(false);
     const[loading,setLoading]=useState(false);
@@ -15,15 +15,30 @@ export default function CreateListing() {
         description:'',
         address:'',
         type:'rent',
-        bedroom:0,
-        bathroom:0,
+        bedrooms:0,
+        bathrooms:0,
         regularPrice:50,
         discountPrice:0,
         offer:false,
         parking:false,
         furnished:false,
-    })
-    console.log(formData)
+    }) 
+    const params=useParams();
+
+    useEffect(()=>{
+        const fetchListing =async()=>{
+            const listingId=params.listingId;
+            const res=await fetch(`/api/listing/get/${listingId}`);
+            const data=await res.json();
+            if(data.success === false){
+                console.log("error in fetching is",data.messsage);
+                return;
+            }
+            setFormData(data);
+        }
+
+   fetchListing();
+    },[])
     const [uploading,setUploading]=useState(false);
     const [imageUploadError,setImageUploadError]=useState(false);
      const {currentUser}=useSelector((state)=>state.user)
@@ -111,7 +126,7 @@ export default function CreateListing() {
           }
           setLoading(true);
           setError(false);
-          const res =await fetch('/api/listing/create',{
+          const res =await fetch(`/api/listing/update/${params.listingId}`,{
             method:'POST',
             headers:{
               'Content-Type':'application/json'
@@ -138,7 +153,7 @@ export default function CreateListing() {
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
-        Create a Listing
+        Update a Listing
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
@@ -299,7 +314,7 @@ export default function CreateListing() {
           }
           <button disabled={loading || uploading} className="p-3 bg-slate-700 rounded-lg text-white roudned-lg uppercase hover:opacity-95 disabled:opacity-80">
            {
-            loading? 'Listing...':'Create Listing'
+            loading? 'Listing...':'Update Listing'
            }
           </button>
           {
