@@ -15,8 +15,8 @@ export default function CreateListing() {
         description:'',
         address:'',
         type:'rent',
-        bedroom:0,
-        bathroom:0,
+        bedrooms:0,
+        bathrooms:0,
         regularPrice:50,
         discountPrice:0,
         offer:false,
@@ -101,7 +101,6 @@ export default function CreateListing() {
       })
      }
     }
-
     const handleSubmit=async(e)=>{
          e.preventDefault();
          try {

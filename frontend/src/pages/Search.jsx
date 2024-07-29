@@ -6,6 +6,7 @@ export default function Search() {
     const navigate=useNavigate();
     const [loading,setLoading]=useState(false);
     const [listings,setLisitings]=useState([]);
+    const [showMore,setShowMore]=useState(false);
     const [sideBardata,setSideBardata]=useState({
         searchTerm:'',
         type:'all',
@@ -83,15 +84,35 @@ useEffect(() => {
 
       const fetchListings =async()=>{
         setLoading(true);
+        setShowMore(false);
         const searchQuery=urlParams.toString();
         const res =await fetch(`/api/listing/get?${searchQuery}`);
         const data=await res.json();
+        if(data.length>8){
+            setShowMore(true);
+        }
+        else{
+            setShowMore(false);
+        }
         setLisitings(data);
         setLoading(false);
       }
       fetchListings()
     },[location.search]);
    
+    const onShowMoreClick=async()=>{
+        const numberofListings=listings.length;
+        const urlParams=new URLSearchParams(location.search);
+        const startIndex=numberofListings;
+        urlParams.set('startIndex',startIndex);
+        const searchQuery=urlParams.toString();
+        const res =await fetch(`/api/listing/get?${searchQuery}`);
+        const data=await res.json();
+        if(data.length<9){
+            setShowMore(false)
+        }
+        setLisitings([...listings,...data]);   
+    } 
   return (
     <div className="flex flex-col md:flex-row">
         <div className="p-7 border-b-2 md:border-r-2
@@ -180,6 +201,14 @@ useEffect(() => {
                  !loading && listings && listings.map((listing)=>{
                    return <ListingItem key={listing._id} listing={listing}/>
                  })
+            }
+            {
+                showMore && 
+                (
+                    <button 
+                    className='text-green-700 hover:underline p-7 text-center w-full' 
+                    onClick={onShowMoreClick}>Show More</button>
+                )
             }
           </div>
         </div>
