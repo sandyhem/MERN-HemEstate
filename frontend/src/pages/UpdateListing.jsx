@@ -212,7 +212,7 @@ export default function UpdateListing() {
             <div className="flex gap-2">
               <input type="checkbox" id="offer" className="w-5"
                  onChange={handleChange}
-                 checked={formData.offer} />
+                 checked={JSON.parse(formData.offer)} />
               <span>Offer</span>
             </div>
           </div>
