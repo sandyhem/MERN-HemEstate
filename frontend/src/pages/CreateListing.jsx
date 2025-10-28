@@ -110,16 +110,17 @@ export default function CreateListing() {
           }
           setLoading(true);
           setError(false);
-          const res =await fetch('/api/listing/create',{
-            method:'POST',
-            headers:{
-              'Content-Type':'application/json'
-            },
-            body:JSON.stringify({
-              ...formData,
-              userRef:currentUser._id
-            })
-          })
+        const res = await fetch('http://localhost:3000/api/listing/create', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            userRef: currentUser._id,
+          }),
+        });
           const data=await res.json();
           setLoading(false);
          if(data.success === false){
